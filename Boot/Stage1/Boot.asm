@@ -10,11 +10,12 @@ MyaS1_start:
     jmp 0x0000:.MyaS1_main
     .MyaS1_main:
         xor ax, ax ; Zero all segment registers
+
         mov ss, ax
+        mov sp, 0x7c00 ; Equiv to MyaS1_start
+
         mov ds, ax
         mov es, ax
-
-        mov sp, 0x7c00 ; Equiv to MyaS1_start
         cld
 
         mov [Mya_Boot_Drive], dl
