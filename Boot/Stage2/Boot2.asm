@@ -3,8 +3,8 @@ BITS 16
 Mya_Boot2_Start_MSG: db "Entering Mya Stage: 2", 0
 Mya_Boot2_Success_MSG: db "Mya S2: OK", 0
 
-MyaL_Success_MSG: db "Mya: Long mode SUPPORTMya", 0
-MyaL_Fail_MSG: db "Mya: Long mode NOT SUPPORTMya", 0
+MyaL_Success_MSG: db "Mya: Long mode SUPPORTED", 0
+MyaL_Fail_MSG: db "Mya: Long mode NOT SUPPORTED", 0
 
 MyaS2_start:
     cli
@@ -22,7 +22,7 @@ MyaS2_start:
     call MyaR_PrintLine
 
     ; Similarly to R in Mya standing for "Real mode", L in MyaL stands for "Long mode"
-    call MyaL_Is_SupportMya ; Check for long mode support
+    call MyaL_Is_Supported ; Check for long mode support
     test eax, eax
 
     jz near .MyaS2R_Fail_MSG
@@ -42,7 +42,7 @@ MyaS2_start:
     or eax, 0x1
     mov cr0, eax
 
-    jmp CODE_SEL:MyaS2_Start_PROTECTMya_MODE
+    jmp CODE_SEL:MyaS2_Start_PROTECTED_MODE
 
 .MyaS2R_Fail_MSG:
     mov si, MyaL_Fail_MSG
@@ -53,7 +53,7 @@ MyaS2_start:
 
 BITS 32
 
-MyaS2_Start_PROTECTMya_MODE:
+MyaS2_Start_PROTECTED_MODE:
     mov ax, DATA_SEL
     mov ds, ax
     mov es, ax
