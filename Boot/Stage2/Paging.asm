@@ -1,4 +1,4 @@
-BITS 16
+BITS 32
 
 Page_Present equ (1 << 0)
 Write_Page equ (1 << 1)
