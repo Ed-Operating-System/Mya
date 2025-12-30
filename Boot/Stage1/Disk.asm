@@ -2,12 +2,12 @@ BITS 16
 
 Mya_Disk_Packet:
     db 0x10
-    db 0x0
+    db 0x00
 
-    .Sector_Amount: dw 0 ; Amount of sectors to load
+    .Sector_Amount: dw 0x0000
     .Buffer_Offset: dw 0x0000
     .Buffer_Segment: dw 0x0000
-    .LBA: dw 0x0
+    .LBA: dq 0x00000000
 
 MyaR_Read_Disk:
     cmp cx, 127
@@ -34,6 +34,9 @@ MyaR_Read_Disk:
     jmp MyaR_Read_Disk
 
 .Mya_Read_Chunk:
+    xor eax, eax
+    mov ax, ax
+
     mov word [Mya_Disk_Packet.Sector_Amount], cx
     mov word [Mya_Disk_Packet.Buffer_Offset], bx
     mov word [Mya_Disk_Packet.Buffer_Segment], dx
@@ -47,6 +50,7 @@ MyaR_Read_Disk:
     int 0x13
 
     jc .MyaR_Error
+
     ret
 
 .MyaR_Error:
