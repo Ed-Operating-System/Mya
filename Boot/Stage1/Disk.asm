@@ -28,19 +28,20 @@ MyaR_Read_Disk:
     pop ax
 
     add ax, 127
-    add dx, 127 * 512 / 16
+    add dx, (127 * 512) / 16
     sub cx, 127
 
     jmp MyaR_Read_Disk
 
 .Mya_Read_Chunk:
-    xor eax, eax
-    mov ax, ax
-
     mov word [Mya_Disk_Packet.Sector_Amount], cx
     mov word [Mya_Disk_Packet.Buffer_Offset], bx
     mov word [Mya_Disk_Packet.Buffer_Segment], dx
-    mov dword [Mya_Disk_Packet.LBA], eax
+
+    xor edx, edx
+    mov dx, ax
+
+    mov dword [Mya_Disk_Packet.LBA], edx
     mov dword [Mya_Disk_Packet.LBA + 4], 0
 
     mov dl, [Mya_Boot_Drive]
