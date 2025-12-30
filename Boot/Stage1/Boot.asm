@@ -4,34 +4,51 @@ ORG 0x7c00 ; Boot sector load address
 jmp short MyaS1_start
 
 Mya_Boot_Drive: db 0
+Mya_Boot_Start_MSG: db "Entering Mya Stage 1...", 0
 Mya_Boot_Success_MSG: db "Mya S1: OK", 0
 
+MYA_VERSION_MSG: db "Mya Bootloader Version 1.2", 0
+MYA_VERSION_DIVIDER_MSG: db "--------------------------", 0
+MYA_BLANK_LINE_MSG: db "", 0
+
+MyaS2_SECTORS equ 4
+MyaS2_LBA equ 1
+
+MyaS2_SEGMENT equ 0x1000
+MyaS2_OFFSET equ 0x0000
+
 MyaS1_start:
-    jmp 0x0000:.MyaS1_main
-    .MyaS1_main:
-        xor ax, ax ; Zero all segment registers
+    call .MyaS1_main
+    jmp Mya_Hang
 
-        mov ss, ax
-        mov sp, 0x7c00 ; Equiv to MyaS1_start
+.MyaS1_main:
+    mov si, MYA_VERSION_MSG
+    call MyaR_PrintLine
 
-        mov ds, ax
-        mov es, ax
-        cld
+    mov si, MYA_VERSION_DIVIDER_MSG
+    call MyaR_PrintLine
 
-        mov [Mya_Boot_Drive], dl
+    mov si, MYA_BLANK_LINE_MSG
+    call MyaR_PrintLine
 
-        mov ax, (MyaS2_start - MyaS1_start) / 512
-        mov cx, 1
+    mov si, Mya_Boot_Start_MSG
+    call MyaR_PrintLine
 
-        mov bx, MyaS2_start
-        xor dx, dx
+    xor ax, ax ; Zero all segment registers
+    mov ss, ax
+    mov ds, ax
+    mov es, ax
 
-        call MyaR_Read_Disk
+    mov sp, 0x7c00 ; Equiv to MyaS1_start   
+    cld
+    
+    mov [Mya_Boot_Drive], dl
+    ;call MyaR_Read_Disk
+    
+    mov si, Mya_Boot_Success_MSG
+    call MyaR_PrintLine
 
-        mov si, Mya_Boot_Success_MSG
-        call MyaR_PrintLine
-
-        jmp MyaS2_start
+    call MyaS2_start
 
 Mya_Hang: hlt
     jmp Mya_Hang
